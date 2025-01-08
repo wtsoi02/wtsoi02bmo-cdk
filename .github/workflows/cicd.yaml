@@ -10,7 +10,7 @@ jobs:     # We are creating jobs to perofrm steps
     - name: setup node.js 20 version
       uses: actions/setup-node@v3
       with:
-        node-version:'20'
+        node-version: '20'
     - name: checkout git repo code to vm
       uses: actions/checkout@v2
 
