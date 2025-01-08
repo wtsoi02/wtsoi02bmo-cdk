@@ -2,7 +2,7 @@ name: Deploy stack on aws
 on:
   push:
     branches:
-      -main
+      - main
 jobs:     # We are creating jobs to perofrm steps
   deploy:
     runs-on: ubuntu-latest  # from azure pool
