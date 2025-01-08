@@ -16,5 +16,4 @@ jobs:     # We are creating jobs to perofrm steps
 
     - name: verify code in vm
       run: ls
-  job2:
-  job3:
+  
