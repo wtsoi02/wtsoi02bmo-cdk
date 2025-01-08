@@ -1,4 +1,4 @@
-nameL Deploy stack on aws
+name: Deploy stack on aws
 on:
   push:
     branches:
