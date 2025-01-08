@@ -1,5 +1,5 @@
 nameL Deploy stack on aws
-On:
+on:
   push:
     branches:
       -main
