@@ -1,0 +1,169 @@
+{
+ "Resources": {
+  "wtsoi01SecurityGroup63EA370D": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "Wtsoi01Day4ec2all/wtsoi01SecurityGroup",
+    "GroupName": "wtsoi01-sg",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "SecurityGroupIngress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "allow SSH access from anywhere",
+      "FromPort": 22,
+      "IpProtocol": "tcp",
+      "ToPort": 22
+     },
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "allow HTTP access from anywhere",
+      "FromPort": 80,
+      "IpProtocol": "tcp",
+      "ToPort": 80
+     },
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "allow HTTPS access from anywhere",
+      "FromPort": 443,
+      "IpProtocol": "tcp",
+      "ToPort": 443
+     }
+    ],
+    "VpcId": "vpc-07eede624774fec02"
+   },
+   "Metadata": {
+    "aws:cdk:path": "Wtsoi01Day4ec2all/wtsoi01SecurityGroup/Resource"
+   }
+  },
+  "wtsoi01vm1InstanceRole61770E06": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ec2.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "wtsoi01-linux-vm"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "Wtsoi01Day4ec2all/wtsoi01vm1/InstanceRole/Resource"
+   }
+  },
+  "wtsoi01vm1InstanceProfile9D2D1315": {
+   "Type": "AWS::IAM::InstanceProfile",
+   "Properties": {
+    "Roles": [
+     {
+      "Ref": "wtsoi01vm1InstanceRole61770E06"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "Wtsoi01Day4ec2all/wtsoi01vm1/InstanceProfile"
+   }
+  },
+  "wtsoi01vm12226F4BC": {
+   "Type": "AWS::EC2::Instance",
+   "Properties": {
+    "AvailabilityZone": "us-east-1a",
+    "IamInstanceProfile": {
+     "Ref": "wtsoi01vm1InstanceProfile9D2D1315"
+    },
+    "ImageId": {
+     "Ref": "SsmParameterValueawsserviceamiamazonlinuxlatestamznamihvmx8664gp2C96584B6F00A464EAD1953AFF4B05118Parameter"
+    },
+    "InstanceType": "t2.micro",
+    "KeyName": "splunk-key",
+    "SecurityGroupIds": [
+     {
+      "Fn::GetAtt": [
+       "wtsoi01SecurityGroup63EA370D",
+       "GroupId"
+      ]
+     }
+    ],
+    "SubnetId": "subnet-03d450bc480b2203a",
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "wtsoi01-linux-vm"
+     }
+    ],
+    "UserData": {
+     "Fn::Base64": "#!/bin/bash"
+    }
+   },
+   "DependsOn": [
+    "wtsoi01vm1InstanceRole61770E06"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "Wtsoi01Day4ec2all/wtsoi01vm1/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/1WNTQ6CMBCFz8K+jECMHsCFcUfgAGYsQzL8tGbaSkzTuxtQFq7ey/e95FVQno9QZri4XHdjPvEDYutRj6ohZ4NoUri4eyRdQWxJB2H/vooNT3XpzT+4GefRaFrN3pNinCE2dtrwnruuxfY8UUorrFFwJk+yLX/3SRnbEQzu8KoKKE9QZINjziUYzzNB880PSF1KRMkAAAA="
+   },
+   "Metadata": {
+    "aws:cdk:path": "Wtsoi01Day4ec2all/CDKMetadata/Default"
+   }
+  }
+ },
+ "Parameters": {
+  "SsmParameterValueawsserviceamiamazonlinuxlatestamznamihvmx8664gp2C96584B6F00A464EAD1953AFF4B05118Parameter": {
+   "Type": "AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>",
+   "Default": "/aws/service/ami-amazon-linux-latest/amzn-ami-hvm-x86_64-gp2"
+  },
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}
