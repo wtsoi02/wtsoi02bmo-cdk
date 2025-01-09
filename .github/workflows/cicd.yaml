@@ -37,11 +37,9 @@ jobs:     # We are creating jobs to perofrm steps
         AWS_REGION:  ${{ secrets.AWS_REGION }}
       run: |
         cd  wtsoi01-day4-bestway
-        cdk deploy Wtsoi01Day4ec2all--require-approval never
+        cdk deploy Wtsoi01Day4ec2all --require-approval never
 
         
-
-
   s3-deploy:
     runs-on: ubuntu-latest # from azure pool 
 
