@@ -1,0 +1,335 @@
+{
+  "version": "tree-0.1",
+  "tree": {
+    "id": "App",
+    "path": "",
+    "children": {
+      "Wtsoi01Project1Stack": {
+        "id": "Wtsoi01Project1Stack",
+        "path": "Wtsoi01Project1Stack",
+        "children": {
+          "Wtsoi01DynamoDB": {
+            "id": "Wtsoi01DynamoDB",
+            "path": "Wtsoi01Project1Stack/Wtsoi01DynamoDB",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "Wtsoi01Project1Stack/Wtsoi01DynamoDB/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::DynamoDB::Table",
+                  "aws:cdk:cloudformation:props": {
+                    "attributeDefinitions": [
+                      {
+                        "attributeName": "BucketName",
+                        "attributeType": "S"
+                      }
+                    ],
+                    "keySchema": [
+                      {
+                        "attributeName": "BucketName",
+                        "keyType": "HASH"
+                      }
+                    ],
+                    "provisionedThroughput": {
+                      "readCapacityUnits": 5,
+                      "writeCapacityUnits": 5
+                    },
+                    "tableName": "wtsoi01-dynamodb"
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_dynamodb.CfnTable",
+                  "version": "2.174.1"
+                }
+              },
+              "ScalingRole": {
+                "id": "ScalingRole",
+                "path": "Wtsoi01Project1Stack/Wtsoi01DynamoDB/ScalingRole",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.Resource",
+                  "version": "2.174.1"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_dynamodb.Table",
+              "version": "2.174.1"
+            }
+          },
+          "Wtsoi01SampleFunction": {
+            "id": "Wtsoi01SampleFunction",
+            "path": "Wtsoi01Project1Stack/Wtsoi01SampleFunction",
+            "children": {
+              "ServiceRole": {
+                "id": "ServiceRole",
+                "path": "Wtsoi01Project1Stack/Wtsoi01SampleFunction/ServiceRole",
+                "children": {
+                  "ImportServiceRole": {
+                    "id": "ImportServiceRole",
+                    "path": "Wtsoi01Project1Stack/Wtsoi01SampleFunction/ServiceRole/ImportServiceRole",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.Resource",
+                      "version": "2.174.1"
+                    }
+                  },
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "Wtsoi01Project1Stack/Wtsoi01SampleFunction/ServiceRole/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                      "aws:cdk:cloudformation:props": {
+                        "assumeRolePolicyDocument": {
+                          "Statement": [
+                            {
+                              "Action": "sts:AssumeRole",
+                              "Effect": "Allow",
+                              "Principal": {
+                                "Service": "lambda.amazonaws.com"
+                              }
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        },
+                        "managedPolicyArns": [
+                          {
+                            "Fn::Join": [
+                              "",
+                              [
+                                "arn:",
+                                {
+                                  "Ref": "AWS::Partition"
+                                },
+                                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+                              ]
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.CfnRole",
+                      "version": "2.174.1"
+                    }
+                  },
+                  "DefaultPolicy": {
+                    "id": "DefaultPolicy",
+                    "path": "Wtsoi01Project1Stack/Wtsoi01SampleFunction/ServiceRole/DefaultPolicy",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "Wtsoi01Project1Stack/Wtsoi01SampleFunction/ServiceRole/DefaultPolicy/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
+                          "aws:cdk:cloudformation:props": {
+                            "policyDocument": {
+                              "Statement": [
+                                {
+                                  "Action": "s3:ListAllMyBuckets",
+                                  "Effect": "Allow",
+                                  "Resource": "*"
+                                },
+                                {
+                                  "Action": [
+                                    "dynamodb:BatchWriteItem",
+                                    "dynamodb:DeleteItem",
+                                    "dynamodb:DescribeTable",
+                                    "dynamodb:PutItem",
+                                    "dynamodb:UpdateItem"
+                                  ],
+                                  "Effect": "Allow",
+                                  "Resource": [
+                                    {
+                                      "Fn::GetAtt": [
+                                        "Wtsoi01DynamoDB84C02E80",
+                                        "Arn"
+                                      ]
+                                    },
+                                    {
+                                      "Ref": "AWS::NoValue"
+                                    }
+                                  ]
+                                }
+                              ],
+                              "Version": "2012-10-17"
+                            },
+                            "policyName": "Wtsoi01SampleFunctionServiceRoleDefaultPolicy772AE03C",
+                            "roles": [
+                              {
+                                "Ref": "Wtsoi01SampleFunctionServiceRole74D76424"
+                              }
+                            ]
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_iam.CfnPolicy",
+                          "version": "2.174.1"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.Policy",
+                      "version": "2.174.1"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.Role",
+                  "version": "2.174.1"
+                }
+              },
+              "Resource": {
+                "id": "Resource",
+                "path": "Wtsoi01Project1Stack/Wtsoi01SampleFunction/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::Lambda::Function",
+                  "aws:cdk:cloudformation:props": {
+                    "code": {
+                      "zipFile": "\nimport time\nimport boto3\nimport os\n\ndynamodb = boto3.resource('dynamodb')\ntable_name = os.environ['DYNAMODB_TABLE_NAME']\ntable = dynamodb.Table(table_name)\n\ndef handler(event, context):\n    s3 = boto3.client('s3')\n    response = s3.list_buckets()\n    buckets = [bucket['Name'] for bucket in response['Buckets']]\n    print(\"S3 Buckets:\", buckets)\n    \n    for bucket in buckets:\n      table.put_item(Item={'BucketName': bucket})\n    \n    return {\n      'statusCode': 200,\n      'body': 'S3 Buckets: ' + ', '.join(buckets)\n    }"
+                    },
+                    "environment": {
+                      "variables": {
+                        "DYNAMODB_TABLE_NAME": {
+                          "Ref": "Wtsoi01DynamoDB84C02E80"
+                        }
+                      }
+                    },
+                    "functionName": "wtsoi01-sample-function",
+                    "handler": "index.handler",
+                    "role": {
+                      "Fn::GetAtt": [
+                        "Wtsoi01SampleFunctionServiceRole74D76424",
+                        "Arn"
+                      ]
+                    },
+                    "runtime": "python3.9"
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_lambda.CfnFunction",
+                  "version": "2.174.1"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_lambda.Function",
+              "version": "2.174.1"
+            }
+          },
+          "Rule": {
+            "id": "Rule",
+            "path": "Wtsoi01Project1Stack/Rule",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "Wtsoi01Project1Stack/Rule/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::Events::Rule",
+                  "aws:cdk:cloudformation:props": {
+                    "scheduleExpression": "rate(3 minutes)",
+                    "state": "ENABLED",
+                    "targets": [
+                      {
+                        "id": "Target0",
+                        "arn": {
+                          "Fn::GetAtt": [
+                            "Wtsoi01SampleFunction276CA448",
+                            "Arn"
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_events.CfnRule",
+                  "version": "2.174.1"
+                }
+              },
+              "AllowEventRuleWtsoi01Project1StackWtsoi01SampleFunction8CF11AAA": {
+                "id": "AllowEventRuleWtsoi01Project1StackWtsoi01SampleFunction8CF11AAA",
+                "path": "Wtsoi01Project1Stack/Rule/AllowEventRuleWtsoi01Project1StackWtsoi01SampleFunction8CF11AAA",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::Lambda::Permission",
+                  "aws:cdk:cloudformation:props": {
+                    "action": "lambda:InvokeFunction",
+                    "functionName": {
+                      "Fn::GetAtt": [
+                        "Wtsoi01SampleFunction276CA448",
+                        "Arn"
+                      ]
+                    },
+                    "principal": "events.amazonaws.com",
+                    "sourceArn": {
+                      "Fn::GetAtt": [
+                        "Rule4C995B7F",
+                        "Arn"
+                      ]
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_lambda.CfnPermission",
+                  "version": "2.174.1"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_events.Rule",
+              "version": "2.174.1"
+            }
+          },
+          "CDKMetadata": {
+            "id": "CDKMetadata",
+            "path": "Wtsoi01Project1Stack/CDKMetadata",
+            "children": {
+              "Default": {
+                "id": "Default",
+                "path": "Wtsoi01Project1Stack/CDKMetadata/Default",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnResource",
+                  "version": "2.174.1"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "constructs.Construct",
+              "version": "10.4.2"
+            }
+          },
+          "BootstrapVersion": {
+            "id": "BootstrapVersion",
+            "path": "Wtsoi01Project1Stack/BootstrapVersion",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnParameter",
+              "version": "2.174.1"
+            }
+          },
+          "CheckBootstrapVersion": {
+            "id": "CheckBootstrapVersion",
+            "path": "Wtsoi01Project1Stack/CheckBootstrapVersion",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnRule",
+              "version": "2.174.1"
+            }
+          }
+        },
+        "constructInfo": {
+          "fqn": "aws-cdk-lib.Stack",
+          "version": "2.174.1"
+        }
+      },
+      "Tree": {
+        "id": "Tree",
+        "path": "Tree",
+        "constructInfo": {
+          "fqn": "constructs.Construct",
+          "version": "10.4.2"
+        }
+      }
+    },
+    "constructInfo": {
+      "fqn": "aws-cdk-lib.App",
+      "version": "2.174.1"
+    }
+  }
+}

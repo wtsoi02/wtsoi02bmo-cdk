@@ -1,0 +1,227 @@
+{
+ "Resources": {
+  "Wtsoi01DynamoDB84C02E80": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "BucketName",
+      "AttributeType": "S"
+     }
+    ],
+    "KeySchema": [
+     {
+      "AttributeName": "BucketName",
+      "KeyType": "HASH"
+     }
+    ],
+    "ProvisionedThroughput": {
+     "ReadCapacityUnits": 5,
+     "WriteCapacityUnits": 5
+    },
+    "TableName": "wtsoi01-dynamodb"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "Wtsoi01Project1Stack/Wtsoi01DynamoDB/Resource"
+   }
+  },
+  "Wtsoi01SampleFunctionServiceRole74D76424": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "Wtsoi01Project1Stack/Wtsoi01SampleFunction/ServiceRole/Resource"
+   }
+  },
+  "Wtsoi01SampleFunctionServiceRoleDefaultPolicy772AE03C": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "s3:ListAllMyBuckets",
+       "Effect": "Allow",
+       "Resource": "*"
+      },
+      {
+       "Action": [
+        "dynamodb:BatchWriteItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "Wtsoi01DynamoDB84C02E80",
+          "Arn"
+         ]
+        },
+        {
+         "Ref": "AWS::NoValue"
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "Wtsoi01SampleFunctionServiceRoleDefaultPolicy772AE03C",
+    "Roles": [
+     {
+      "Ref": "Wtsoi01SampleFunctionServiceRole74D76424"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "Wtsoi01Project1Stack/Wtsoi01SampleFunction/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "Wtsoi01SampleFunction276CA448": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "ZipFile": "\nimport time\nimport boto3\nimport os\n\ndynamodb = boto3.resource('dynamodb')\ntable_name = os.environ['DYNAMODB_TABLE_NAME']\ntable = dynamodb.Table(table_name)\n\ndef handler(event, context):\n    s3 = boto3.client('s3')\n    response = s3.list_buckets()\n    buckets = [bucket['Name'] for bucket in response['Buckets']]\n    print(\"S3 Buckets:\", buckets)\n    \n    for bucket in buckets:\n      table.put_item(Item={'BucketName': bucket})\n    \n    return {\n      'statusCode': 200,\n      'body': 'S3 Buckets: ' + ', '.join(buckets)\n    }"
+    },
+    "Environment": {
+     "Variables": {
+      "DYNAMODB_TABLE_NAME": {
+       "Ref": "Wtsoi01DynamoDB84C02E80"
+      }
+     }
+    },
+    "FunctionName": "wtsoi01-sample-function",
+    "Handler": "index.handler",
+    "Role": {
+     "Fn::GetAtt": [
+      "Wtsoi01SampleFunctionServiceRole74D76424",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.9"
+   },
+   "DependsOn": [
+    "Wtsoi01SampleFunctionServiceRoleDefaultPolicy772AE03C",
+    "Wtsoi01SampleFunctionServiceRole74D76424"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "Wtsoi01Project1Stack/Wtsoi01SampleFunction/Resource"
+   }
+  },
+  "Rule4C995B7F": {
+   "Type": "AWS::Events::Rule",
+   "Properties": {
+    "ScheduleExpression": "rate(3 minutes)",
+    "State": "ENABLED",
+    "Targets": [
+     {
+      "Arn": {
+       "Fn::GetAtt": [
+        "Wtsoi01SampleFunction276CA448",
+        "Arn"
+       ]
+      },
+      "Id": "Target0"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "Wtsoi01Project1Stack/Rule/Resource"
+   }
+  },
+  "RuleAllowEventRuleWtsoi01Project1StackWtsoi01SampleFunction8CF11AAA6C713595": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "Wtsoi01SampleFunction276CA448",
+      "Arn"
+     ]
+    },
+    "Principal": "events.amazonaws.com",
+    "SourceArn": {
+     "Fn::GetAtt": [
+      "Rule4C995B7F",
+      "Arn"
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "Wtsoi01Project1Stack/Rule/AllowEventRuleWtsoi01Project1StackWtsoi01SampleFunction8CF11AAA"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/02LywrCMBREv6X79NoW0Q8QXEt0L3kJt80DepOWEvLvYtqFqznMnBmgv56hb8RKrdJTa1FCfkahJiZWeme9eeGClpBfQlrDbh9foTArnNQC8j15FTH43/TPDzM7JMLgC0PhIPOw/2s+gkW1Va9SYWYxPhJkng4tWVMK44ZCmtVeHVyYD9rASKdl6KC/QNeMhNjOyUd0BvieX4g+PLrcAAAA"
+   },
+   "Metadata": {
+    "aws:cdk:path": "Wtsoi01Project1Stack/CDKMetadata/Default"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

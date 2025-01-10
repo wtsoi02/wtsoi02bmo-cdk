@@ -1,0 +1,109 @@
+{
+  "version": "39.0.0",
+  "artifacts": {
+    "Wtsoi01Project1Stack.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "Wtsoi01Project1Stack.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "Wtsoi01Project1Stack": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://992382386705/us-east-1",
+      "properties": {
+        "templateFile": "Wtsoi01Project1Stack.template.json",
+        "terminationProtection": false,
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::992382386705:role/cdk-hnb659fds-deploy-role-992382386705-us-east-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::992382386705:role/cdk-hnb659fds-cfn-exec-role-992382386705-us-east-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-992382386705-us-east-1/6ffbef1acc44f6d47ec1575393371313b2c3fe587252dd7624e98c33b733e18c.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "Wtsoi01Project1Stack.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::992382386705:role/cdk-hnb659fds-lookup-role-992382386705-us-east-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "Wtsoi01Project1Stack.assets"
+      ],
+      "metadata": {
+        "/Wtsoi01Project1Stack/Wtsoi01DynamoDB": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "Wtsoi01DynamoDB84C02E80"
+            }
+          }
+        ],
+        "/Wtsoi01Project1Stack/Wtsoi01DynamoDB/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "Wtsoi01DynamoDB84C02E80"
+          }
+        ],
+        "/Wtsoi01Project1Stack/Wtsoi01SampleFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "Wtsoi01SampleFunctionServiceRole74D76424"
+          }
+        ],
+        "/Wtsoi01Project1Stack/Wtsoi01SampleFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "Wtsoi01SampleFunctionServiceRoleDefaultPolicy772AE03C"
+          }
+        ],
+        "/Wtsoi01Project1Stack/Wtsoi01SampleFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "Wtsoi01SampleFunction276CA448"
+          }
+        ],
+        "/Wtsoi01Project1Stack/Rule/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "Rule4C995B7F"
+          }
+        ],
+        "/Wtsoi01Project1Stack/Rule/AllowEventRuleWtsoi01Project1StackWtsoi01SampleFunction8CF11AAA": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "RuleAllowEventRuleWtsoi01Project1StackWtsoi01SampleFunction8CF11AAA6C713595"
+          }
+        ],
+        "/Wtsoi01Project1Stack/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/Wtsoi01Project1Stack/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/Wtsoi01Project1Stack/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "Wtsoi01Project1Stack"
+    },
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    }
+  }
+}
